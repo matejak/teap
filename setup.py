@@ -15,7 +15,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/EnterpriseyIntranet/teap",
-    packages=["teap"],
+    packages=setuptools.find_packages(),
     package_dir={"teap": "src/web"},
     include_package_data=True,
     classifiers=[
