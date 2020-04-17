@@ -419,8 +419,13 @@ class LdapFranchise(Franchise, LdapMajorStructure):
 
     def __init__(self, fqdn=None, *args, **kwargs):
         self.fqdn = fqdn
-        if "display_name" not in kwargs:
-            kwargs["display_name"] = LdapFranchise.suggest_name(kwargs["machine_name"])
+        display_name = kwargs.get("display_name")
+        if not display_name:
+            try:
+                instance = self.from_ldap(kwargs["machine_name"])
+                kwargs["display_name"] = instance.display_name
+            except Exception:
+                kwargs["display_name"] = LdapFranchise.suggest_name(kwargs["machine_name"])
         super(LdapFranchise, self).__init__(*args, **kwargs)
 
     @staticmethod
