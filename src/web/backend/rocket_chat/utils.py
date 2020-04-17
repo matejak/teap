@@ -85,7 +85,7 @@ class RocketChatService(RocketMixin):
                 email, name, password, username,
                 requirePasswordChange=False, verified=True)
 
-    def create_channel(self, room_name):
+    def create_channel(self, channel_name):
         """
         Create channel
         Args:
@@ -94,9 +94,9 @@ class RocketChatService(RocketMixin):
         Returns:
 
         """
-        return self.rocket.channels_create(room_name)
+        return self.rocket.channels_create(channel_name)
 
-    def create_group(self, room_name):
+    def create_group(self, group_name):
         """
         Create channel
         Args:
@@ -105,7 +105,7 @@ class RocketChatService(RocketMixin):
         Returns:
 
         """
-        return self.rocket.groups_create(room_name)
+        return self.rocket.groups_create(group_name)
 
     def invite_user_to_channel(self, rocket_channel, rocket_user):
         return self.rocket.channels_invite(rocket_channel, rocket_user)
