@@ -1,0 +1,72 @@
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+{% from 'bootstrap5/utils.html' import render_messages %}
+
+{% macro dark_mode() %}
+<div class="fixed-bottom form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="darkModeSwitch" checked>
+    <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const htmlElement = document.documentElement;
+    const switchElement = document.getElementById('darkModeSwitch');
+
+    // Set the default theme to dark if no setting is found in local storage
+    const currentTheme = localStorage.getItem('bsTheme') || 'dark';
+    htmlElement.setAttribute('data-bs-theme', currentTheme);
+    switchElement.checked = currentTheme === 'dark';
+
+    switchElement.addEventListener('change', function () {
+        if (this.checked) {
+            htmlElement.setAttribute('data-bs-theme', 'dark');
+            localStorage.setItem('bsTheme', 'dark');
+        } else {
+            htmlElement.setAttribute('data-bs-theme', 'light');
+            localStorage.setItem('bsTheme', 'light');
+        }
+    });
+});
+</script>
+{% endmacro %}
+
+
+<!doctype html>
+<html>
+    <head>
+      {% if title %}
+      <title>TEAP &mdash; {{ title }}</title>
+      {% else %}
+      <title>TEAP</title>
+      {% endif %}
+      {{ bootstrap.load_css() }}
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+      {% block head %}
+      {% endblock %}
+    </head>
+    <body>
+	<nav class="navbar bg-body sticky-top navbar-expand-lg">
+	    <div class="navbar-nav mr-auto">
+		{% block navbar %}
+		{% endblock %}
+	    </div>
+	</nav>
+        {%- if breadcrumbs %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {%- for name, link in breadcrumbs.items() %}
+                {%- if link %}
+		<li class="breadcrumb-item"><a href="{{ link }}">{{ name }}</a></li>
+                {%- else %}
+		<li class="breadcrumb-item active" aria-current="page">{{ name }}</li>
+                {%- endif %}
+                {% endfor -%}
+            </ol>
+        </nav>
+        {%- endif %}
+	{{ render_messages() }}
+        {% block content %}{% endblock %}
+	{% block footer %}{{ dark_mode() | safe }}{% endblock %}
+	{{ bootstrap.load_js() }}
+    </body>
+</html>

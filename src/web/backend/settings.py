@@ -76,25 +76,26 @@ EDAP_DOMAIN = env.str("EDAP_DOMAIN")
 SERVER_NAME = env.str("SERVER_NAME")
 AUTHORIZATION = env.bool("AUTHORIZATION", False)
 
-SAML2_IDENTITY_PROVIDERS = [
-    {
-        'CLASS': 'backend.saml.KeycloakIdPHandler',
-        'OPTIONS': {
-            'display_name': 'Keycloak IdP',
-            'entity_id': f'https://sso.{EDAP_DOMAIN}/auth/realms/master',
-            'sso_url':   f'https://sso.{EDAP_DOMAIN}/auth/realms/master/protocol/saml',
-            'slo_url':   f'https://sso.{EDAP_DOMAIN}/auth/realms/master/protocol/saml',
+if 0:
+    SAML2_IDENTITY_PROVIDERS = [
+        {
+            'CLASS': 'backend.saml.KeycloakIdPHandler',
+            'OPTIONS': {
+                'display_name': 'Keycloak IdP',
+                'entity_id': f'https://sso.{EDAP_DOMAIN}/auth/realms/master',
+                'sso_url':   f'https://sso.{EDAP_DOMAIN}/auth/realms/master/protocol/saml',
+                'slo_url':   f'https://sso.{EDAP_DOMAIN}/auth/realms/master/protocol/saml',
+            },
         },
-    },
-]
-try:
-    SAML2_SP = {
-        'certificate': certificate_from_file(const.SAML_CERT_ROOT / const.SAML_CHOICES["sp-cert"]),
-        'private_key': private_key_from_file(const.SAML_CERT_ROOT / const.SAML_CHOICES["sp-key"]),
-    }
-    SAML2_IDENTITY_PROVIDERS[0]['OPTIONS']['certificate'] = certificate_from_file(
-        const.SAML_CERT_ROOT / const.SAML_CHOICES["idp-cert"]
-    )
-except Exception as e:
-    print(f"Error configuring SAML: {e}", file=sys.stderr)
-    pass  # Files probably don't exist
+    ]
+    try:
+        SAML2_SP = {
+            'certificate': certificate_from_file(const.SAML_CERT_ROOT / const.SAML_CHOICES["sp-cert"]),
+            'private_key': private_key_from_file(const.SAML_CERT_ROOT / const.SAML_CHOICES["sp-key"]),
+        }
+        SAML2_IDENTITY_PROVIDERS[0]['OPTIONS']['certificate'] = certificate_from_file(
+            const.SAML_CERT_ROOT / const.SAML_CHOICES["idp-cert"]
+        )
+    except Exception as e:
+        print(f"Error configuring SAML: {e}", file=sys.stderr)
+        pass  # Files probably don't exist
