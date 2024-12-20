@@ -6,10 +6,19 @@ import wtforms.validators as vali
 import flask_wtf
 import flask_login
 
-from . import commands, core, nextcloud, rocket_chat, ldap, actions, saml
+from . import commands, core, nextcloud, rocket_chat, ldap, actions
 from . import extensions, utils
 
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+
+class TeapApp(flask.Flask):
+    def __init__(self):
+        super().__init__(__name__.split('.')[0], static_folder='static', template_folder='templates')
+
+    def render_template(self, name, ** kwargs):
+        kwargs["authenticated_user"] = flask_login.current_user
+        return flask.render_template(name, ** kwargs)
 
 
 def create_app(config_object='backend.settings'):
@@ -17,13 +26,15 @@ def create_app(config_object='backend.settings'):
 
     :param config_object: The configuration object to use.
     """
-    app = flask.Flask(__name__.split('.')[0], static_folder='../dist/static', template_folder='../dist')
+    # app = flask.Flask(__name__.split('.')[0], static_folder='static', template_folder='templates')
+    app = TeapApp()
     app.wsgi_app = ProxyFix(app.wsgi_app)
     app.config.from_object(config_object)
     app.url_map.strict_slashes = False
     register_extensions(app)
     register_blueprints(app)
-    register_errorhandlers(app)
+    # TODO: Create fancy error handlers
+    # register_errorhandlers(app)
     register_shellcontext(app)
     register_commands(app)
     initialize_modules(app)
@@ -43,6 +54,7 @@ def register_extensions(app):
         extensions.migrate.init_app(app, extensions.db)
     extensions.login_manager.init_app(app)
     extensions.mail.init_app(app)
+    extensions.bootstrap.init_app(app)
     return None
 
 
@@ -88,8 +100,8 @@ def register_auth(app):
     def login_by_ldap():
         form = LoginForm()
         form.next_page.data = flask.request.args.get("next")
-        return flask.render_template(
-                "templates/login.html",
+        return app.render_template(
+                "login.html",
                 target_url=flask.url_for("authenticate_by_ldap"), login_form=form)
 
     @app.route("/reset_pw", methods=["POST"])
@@ -117,7 +129,7 @@ def register_auth(app):
         form = ResetPasswordForm()
         form.token.data = token
         return flask.render_template(
-                "templates/reset_pw.html",
+                "reset_pw.html",
                 details_form=form,
                 token=token)
 
@@ -163,8 +175,10 @@ def register_blueprints(app):
         bp.before_request(utils.check_route_access)
         app.register_blueprint(bp)
 
-    saml_bp = saml.get_blueprint()
-    app.register_blueprint(saml_bp, url_prefix="/saml/")
+    if 0:
+        from . import saml
+        saml_bp = saml.get_blueprint()
+        app.register_blueprint(saml_bp, url_prefix="/saml/")
     return None
 
 

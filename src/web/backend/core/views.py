@@ -1,5 +1,5 @@
 """Public section, including homepage and signup."""
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, current_app
 from flask_login import login_required
 
 blueprint = Blueprint('core', __name__)
@@ -12,4 +12,4 @@ def index(path):
     if False and current_app.debug:
         import requests
         return requests.get('http://localhost:8081/{}'.format(path)).text
-    return render_template('index.html')
+    return current_app.render_template('index.html')

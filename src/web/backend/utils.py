@@ -5,7 +5,8 @@ from functools import wraps
 import flask
 import flask_login
 
-from .extensions import service_provider, User
+# from .extensions import service_provider, User
+from .extensions import User
 
 
 NOAUTH_ENDPOINTS = (
@@ -33,10 +34,10 @@ def _login_by_ldap(username, password, next_page=None):
     try:
         edap = get_edap()
         login_successful = edap.verify_user_password(username, password)
-    except Exception:
+    except Exception as exc:
         login_successful = False
+        flask.flash(f"Login not successful")
 
-    print(f"{login_successful=}")
     if login_successful:
         flask_login.login_user(User(username))
     else:

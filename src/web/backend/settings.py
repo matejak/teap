@@ -10,7 +10,6 @@ import gzip
 
 from environs import Env
 
-from flask_saml2.utils import certificate_from_file, private_key_from_file
 from . import constants as const
 
 
@@ -49,34 +48,39 @@ if FREQUENT_PASSWORDS_FILENAME:
         print(msg, file=sys.stderr)
 
 # NEXTCLOUD
-NEXTCLOUD_HOST = env.str('NEXTCLOUD_HOST')
-NEXTCLOUD_USER = env.str('NEXTCLOUD_USER')
-NEXTCLOUD_PASSWORD = env.str("NEXTCLOUD_PASSWORD")
+NEXTCLOUD_HOST = env.str('NEXTCLOUD_HOST', "")
+if NEXTCLOUD_HOST:
+    NEXTCLOUD_USER = env.str('NEXTCLOUD_USER')
+    NEXTCLOUD_PASSWORD = env.str("NEXTCLOUD_PASSWORD")
 
 # MAIL
-MAIL_SERVER = env.str('MAIL_SERVER')
-MAIL_PORT = env.str('MAIL_PORT')
-MAIL_USE_TLS = env.str('MAIL_USE_TLS')
-MAIL_USERNAME = env.str('MAIL_USERNAME')
-MAIL_PASSWORD = env.str('MAIL_PASSWORD')
+MAIL_SERVER = env.str('MAIL_SERVER', "")
+if MAIL_SERVER:
+    MAIL_PORT = env.str('MAIL_PORT')
+    MAIL_USE_TLS = env.str('MAIL_USE_TLS')
+    MAIL_USERNAME = env.str('MAIL_USERNAME')
+    MAIL_PASSWORD = env.str('MAIL_PASSWORD')
 
 PW_RESET_EXPIRY_SEC = max(0, env.int("PW_RESET_EXPIRY_SEC", 600))
 
 # Rocket chat
-ROCKETCHAT_USER = env.str("ROCKETCHAT_USER")
-ROCKETCHAT_PASSWORD = env.str("ROCKETCHAT_PASSWORD")
-ROCKETCHAT_HOST = env.str("ROCKETCHAT_HOST")
+ROCKETCHAT_HOST = env.str("ROCKETCHAT_HOST", "")
+if ROCKETCHAT_HOST:
+    ROCKETCHAT_USER = env.str("ROCKETCHAT_USER")
+    ROCKETCHAT_PASSWORD = env.str("ROCKETCHAT_PASSWORD")
 
 # Edap
-EDAP_HOSTNAME = env.str("EDAP_HOSTNAME")
-EDAP_USER = env.str("EDAP_USER")
-EDAP_PASSWORD = env.str("EDAP_PASSWORD")
-EDAP_DOMAIN = env.str("EDAP_DOMAIN")
+EDAP_HOSTNAME = env.str("EDAP_HOSTNAME", "")
+if EDAP_HOSTNAME:
+    EDAP_USER = env.str("EDAP_USER")
+    EDAP_PASSWORD = env.str("EDAP_PASSWORD")
+    EDAP_DOMAIN = env.str("EDAP_DOMAIN")
 
-SERVER_NAME = env.str("SERVER_NAME")
+SERVER_NAME = env.str("SERVER_NAME", "localhost")
 AUTHORIZATION = env.bool("AUTHORIZATION", False)
 
 if 0:
+    from flask_saml2.utils import certificate_from_file, private_key_from_file
     SAML2_IDENTITY_PROVIDERS = [
         {
             'CLASS': 'backend.saml.KeycloakIdPHandler',

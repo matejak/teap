@@ -57,7 +57,7 @@ class UserAdministrationViewSet(EdapMixin,
         # Render a form to send email
 
         return flask.render_template(
-                "templates/send_reset.html",
+                "send_reset.html",
                 details_form=SendResetEmailForm())
 
     @utils.authorize_only_hr_admins()
@@ -434,6 +434,7 @@ def details_change():
     form = UserForm()
     edap = get_edap()
     try:
+        print(flask_login.current_user)
         uid = flask_login.current_user.id
     except AttributeError:
         return flask.redirect(flask.url_for(f"login", next=flask.url_for("divisions_api.details_change")))
@@ -444,7 +445,7 @@ def details_change():
     form.surname.data = user.surname
 
     return flask.render_template(
-            "templates/me.html",
+            "me.html",
             user=user,
             details_form=form,
             bp_prefix=blueprint.url_prefix)

@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h4>Log in</h4>
 <p>
 Log in to the system
@@ -6,7 +9,7 @@ Log in to the system
 	{{ login_form.next }}
 	{{ login_form.username.label }} {{ login_form.username(size=20) }} <br/>
 	{{ login_form.password.label }} {{ login_form.password(size=20) }} <br/>
-	<input type="submit" value="Go">
+	<input type="submit" class="btn btn-primary" value="Login" >
 </form>
 </p>
-
+{% endblock %}

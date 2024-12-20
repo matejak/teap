@@ -10,10 +10,16 @@ logger = logging.getLogger()
 def get_edap():
     """ Create if doesn't exist or return edap from flask g object """
     if 'edap' not in g:
-        g.edap = edap.Edap(current_app.config['EDAP_HOSTNAME'],
-                      current_app.config['EDAP_USER'],
-                      current_app.config['EDAP_PASSWORD'],
-                      current_app.config['EDAP_DOMAIN'])
+        try: 
+            hostname = current_app.config['EDAP_HOSTNAME']
+            user = current_app.config['EDAP_USER']
+            g.edap = edap.Edap(
+                    hostname, user,
+                    current_app.config['EDAP_PASSWORD'],
+                    current_app.config['EDAP_DOMAIN'])
+        except Exception as exc:
+            msg = f"Couldn't connect to server '{hostname}' as '{user}': {exc}"
+            raise RuntimeError(msg)
     return g.edap
 
 
@@ -93,7 +99,7 @@ def send_password_reset_email(to, data):
     expiry_s = flask.current_app.config["PW_RESET_EXPIRY_SEC"]
     token = get_reset_password_token(data, expiry_s)
     msg.body = flask.render_template(
-        "templates/mail_pw_reset.txt", data=data, token=token,
+        "mail_pw_reset.txt", data=data, token=token,
         valid_for_minutes=expiry_s // 60)
     extensions.mail.send(msg)
 

@@ -47,8 +47,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     <body>
 	<nav class="navbar bg-body sticky-top navbar-expand-lg">
 	    <div class="navbar-nav mr-auto">
+                  {% if authenticated_user %}                            
 		{% block navbar %}
 		{% endblock %}
+                {{ render_nav_item('logout', 'Logout user ' ~ authenticated_user.get_id()) }}                                               
+                  {% else %}                                    
+                {{ render_nav_item('login', 'Login') }}
+                  {% endif %}     
 	    </div>
 	</nav>
         {%- if breadcrumbs %}
