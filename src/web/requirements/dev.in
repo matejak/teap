@@ -4,5 +4,4 @@
 pytest
 WebTest
 factory-boy
-
-
+ruff

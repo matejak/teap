@@ -3,6 +3,7 @@
 # Flask
 Flask==3.*
 click
+bootstrap-flask
 
 # Database
 Flask-SQLAlchemy==3.*
@@ -14,18 +15,21 @@ Flask-Migrate==2.*
 Flask-WTF==1.*
 
 # Flask-restful
-flask-restful==0.*
+flask-restful
 marshmallow==3.*
 
 # Flask SAML2
-flask-saml2==0.3.*
-signxml==2.7.1            # via flask-saml2, see https://github.com/XML-Security/signxml/issues/143 for why not 2.7.2
+python3-saml
+# flask-saml2==0.3.*
+# signxml==2.7.1            # via flask-saml2, see https://github.com/XML-Security/signxml/issues/143 for why not 2.7.2
+# signxml==2.*
+pyopenssl >= 23.2.0  # via flask-saml2, see e.g. https://github.com/conda/conda/issues/13619
 
 # Deployment
 gunicorn==19.*
 
 # Auth
-Flask-Login==0.*
+Flask-Login
 
 # Environment variable parsing
 environs==5.*
